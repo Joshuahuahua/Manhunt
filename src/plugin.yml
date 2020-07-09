@@ -1,0 +1,11 @@
+name: Manhunt
+author: Joshalot
+main: com.github.joshuahuahua.Manhunt.Main
+version: 1.0
+description: Multiplayer Manhunt Plugin
+api-version: 1.13
+
+commands:
+  Manhunt:
+    aliases: mh
+    description: Use /ds help for more information
