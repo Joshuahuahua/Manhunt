@@ -1,5 +1,6 @@
 package com.github.joshuahuahua.Manhunt;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.joshuahuahua.Manhunt.listeners.RightClick;
-
+import com.github.joshuahuahua.Manhunt.listeners.OnStep;
 
 
 public class Main extends JavaPlugin {
@@ -21,6 +22,7 @@ public class Main extends JavaPlugin {
 
 
     public static String prefix = "$b$lManhunt$r$8> $7";
+    public static Location hunterPos = null;
     public static List<Player> lobby = new ArrayList<>();
     public static List<Player> hunters = new ArrayList<>();
     //public static List<Player> runners = new ArrayList<>();
@@ -31,6 +33,7 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         PluginManager pluginManager  = getServer().getPluginManager();
         pluginManager.registerEvents(new RightClick(), this);
+        pluginManager.registerEvents(new OnStep(), this);
         getLogger().info("Manhunt Enabled");
     }
 

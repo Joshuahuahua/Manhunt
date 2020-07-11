@@ -8,13 +8,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.github.joshuahuahua.Manhunt.message;
 import com.github.joshuahuahua.Manhunt.Main;
 
 
 public class RightClick implements Listener {
 
-    //@EventHandler(priority= EventPriority.HIGH)
     @EventHandler
     public void onPlayerUse(PlayerInteractEvent event) {
 
@@ -23,14 +21,9 @@ public class RightClick implements Listener {
 
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             if(player.getInventory().getItemInMainHand().getType() == Material.COMPASS && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("Tracker")){
-                message.global("poggers");
-                player.setCompassTarget(Main.runner.getLocation());
-
-
-
-
-
-
+                if (Main.hunterPos != null) {
+                    player.setCompassTarget(Main.hunterPos);
+                }
             }
         }
     }
