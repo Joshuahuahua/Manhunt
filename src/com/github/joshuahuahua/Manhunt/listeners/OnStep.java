@@ -10,9 +10,9 @@ public class OnStep implements Listener {
 
     @EventHandler
     public void onPlayerStep(PlayerMoveEvent event) {
-        if (event.getPlayer() == Main.runner.getPlayer()) {
+        if (Main.runners.contains(event.getPlayer())) {
             if (event.getPlayer().getWorld().getName().equals("world")) {
-                Main.hunterPos = event.getPlayer().getLocation();
+                Main.runnerLoaction.put(event.getPlayer(), event.getPlayer().getLocation());
             }
         }
     }
