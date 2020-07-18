@@ -39,28 +39,19 @@ public class Main extends JavaPlugin {
     }
     public static HashMap<String, Boolean> gameRules = Main.getGameRules();
 
-
-
-
     //############################## runnerLoaction ################################
-    //######################## Player-Runner Location-Runner #######################
     public static HashMap<Player, Location> getRunnerLoaction() {
         HashMap<Player, Location> runnerLoaction = new HashMap<Player, Location>();
         return runnerLoaction;
     }
     public static HashMap<Player, Location> runnerLoaction = Main.getRunnerLoaction();
 
-
     //############################## hunterChoice ################################
-    //######################## Player-Hunter Player-Runner #######################
     public static HashMap<Player, Player> getHunterChoice() {
         HashMap<Player, Player> hunterChoice = new HashMap<Player, Player>();
         return hunterChoice;
     }
     public static HashMap<Player, Player> hunterChoice = Main.getHunterChoice();
-
-
-
 
 
 
@@ -92,12 +83,6 @@ public class Main extends JavaPlugin {
                 message.global("runners: " + runners.toString());
                 message.global("runnerLoaction: " + runnerLoaction.toString());
                 message.global("hunterChoice: " + hunterChoice.toString());
-                return true;
-            }
-
-            if (args.length == 1 && args[0].equalsIgnoreCase("test2")) {
-                runners.add((Player) sender);
-                message.global("set to runner");
                 return true;
             }
 
@@ -164,7 +149,7 @@ public class Main extends JavaPlugin {
                         else if (runners.contains(player)) {
                             role = "Runner";
                         }
-                        message.sender(sender, player.getName() + " Role: " + role);
+                        message.sender(sender, "$l$a" + player.getName() + ": $r$7Role: " + role);
                     }
                 } else {
                     message.sender(sender,"$cYou are not in a lobby!");
@@ -219,7 +204,7 @@ public class Main extends JavaPlugin {
                                 runners.remove((Player) sender);
                             }
                             message.sender(sender, "You are now a hunter");
-                            message.global(sender.getName() + " is now a hunter");
+                            message.sender(sender, "$l$a" + sender.getName() + " $r$7is now a hunter");
                         } else {
                             message.sender(sender, "$cYou are not in a lobby!");
                             message.sender(sender, "Use /mh create to create one or /mh join to join an existing one!");
@@ -245,7 +230,7 @@ public class Main extends JavaPlugin {
                                 hunters.remove((Player) sender);
                             }
                             message.sender(sender, "You are now a runner");
-                            message.global(sender.getName() + " is now a runner");
+                            message.sender(sender, "$l$a" + sender.getName() + " $r$7is now a runner");
 
                         } else {
                             message.sender(sender, "$cYou are not in a lobby!");
@@ -277,17 +262,17 @@ public class Main extends JavaPlugin {
                                     player.setHealth(20);
                                     player.setFoodLevel(20);
                                     player.sendTitle(ChatColor.translateAlternateColorCodes('$', "$a$lManhunt Started"), ChatColor.translateAlternateColorCodes('$',"$aYou have " + freezeTime + " seconds!"), 10,40,10);
+                                    player.teleport(host.getLocation());
                                 }
 
                                 for (Player player : hunters) {
                                     player.getInventory().addItem(createItem(Material.COMPASS, "Tracker", "Right-click to track current runner", "Shift Right-click to select runner"));
                                     hunterChoice.put(player, runners.get(0));
+                                    updateCompass(player);
                                 }
 
                                 message.global("$a$lManhunt Started");
                                 // Make hunters frozen for 20 seconds
-
-
 
                             } else {
                                 message.sender(sender, "$cYou need at least 1 hunter and 1 runner!");
@@ -322,7 +307,6 @@ public class Main extends JavaPlugin {
                 }
                 return true;
             }
-
 
             message.sender(sender,"$cInvalid command!");
             message.sender(sender,"Use /mh help for a list of available commands.");
@@ -366,5 +350,10 @@ public class Main extends JavaPlugin {
 
             player.openInventory(runnersInv);
         }
+    }
+
+    public static void updateCompass(Player player) {
+        player.setCompassTarget(Main.runnerLoaction.get(Main.hunterChoice.get(player)));
+        message.player(player,"Now tracking: $l$a" + Main.hunterChoice.get(player).getName());
     }
 }

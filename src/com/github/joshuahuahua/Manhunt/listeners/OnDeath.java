@@ -3,7 +3,6 @@ package com.github.joshuahuahua.Manhunt.listeners;
 import com.github.joshuahuahua.Manhunt.Main;
 import com.github.joshuahuahua.Manhunt.message;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -23,10 +22,10 @@ public class OnDeath implements Listener {
             @Override
             public void run() {
                 if (Main.isRunning) {
-                    if (Main.runners.contains((Player) event)) {
-                        ((Player) event).setGameMode(GameMode.SPECTATOR);
-                        Main.runners.remove((Player) event);
-                        Main.lobby.remove((Player) event);
+                    if (Main.runners.contains(event.getEntity())) {
+                        event.getEntity().setGameMode(GameMode.SPECTATOR);
+                        Main.runners.remove(event.getEntity());
+                        Main.lobby.remove(event.getEntity());
                         if (Main.runners.size() == 0) {
                             endGame("hunters");
                         } else {
