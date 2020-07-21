@@ -10,6 +10,9 @@ public class OnStep implements Listener {
 
     @EventHandler
     public void onPlayerStep(PlayerMoveEvent event) {
+        if (Main.hunters.contains(event.getPlayer()) && Main.freeze == true) {
+            event.setCancelled(true);
+        }
         if (Main.runners.contains(event.getPlayer())) {
             if (event.getPlayer().getWorld().getName().equals("world")) {
                 Main.runnerLoaction.put(event.getPlayer(), event.getPlayer().getLocation());

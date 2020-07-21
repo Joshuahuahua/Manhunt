@@ -9,7 +9,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.joshuahuahua.Manhunt.Main;
-import com.github.joshuahuahua.Manhunt.message;
 
 
 public class RightClick implements Listener {
@@ -27,7 +26,6 @@ public class RightClick implements Listener {
                             Main.updateCompass(player);
                         }
                     } else {
-                        //GUI
                         Main.selectInv(event.getPlayer(), "Runners");
                     }
                 }

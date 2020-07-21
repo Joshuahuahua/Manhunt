@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +24,11 @@ public class Main extends JavaPlugin {
 
     public static String prefix = "$b$lManhunt$r$8> $7";
     public static Player host = null;
-    public static Boolean isRunning = false;
-    public static Integer freezeTime = 20;
+    public static boolean isRunning = false;
+    static int freezeTime = 5;
+    public static boolean freeze = false;
+    static int freezeTimer;
+    int currentTime;
 
     public static List<Player> lobby = new ArrayList<>();
     public static List<Player> hunters = new ArrayList<>();
@@ -96,6 +100,8 @@ public class Main extends JavaPlugin {
                 message.sender(sender,"$6/mh hunter: $fJoin the 'runners'");
                 message.sender(sender,"$6/mh runner: $fJoin the 'hunters'");
                 message.sender(sender,"$6/mh leave: $fLeaves current lobby");
+                message.sender(sender,"$6/mh list: $fLists all players in current lobby");
+                message.sender(sender,"$6/mh timeset <time>: $fSets runner's start time");
                 message.sender(sender,"$6/mh start: $fStarts Manhunt match");
                 message.sender(sender,"$6/mh stop: $fStops Manhunt match");
                 return true;
@@ -159,6 +165,27 @@ public class Main extends JavaPlugin {
             }
 
 
+            //############################## /mh timeset <num> ################################
+            if (args.length == 2 && args[0].equalsIgnoreCase("timeset")) {
+                if (host != null) {
+                    if (sender.getName().equals(host.getName())) {
+                        if (!isRunning) {
+                            freezeTime = Integer.parseInt(args[1]);
+                            message.sender(sender,"Set time to$e " + freezeTime);
+                        } else {
+                            message.sender(sender,"$cYou can not change this mid-game!");
+                        }
+                    } else {
+                        sender.sendMessage("$cOnly the host can do that!");
+                    }
+                } else {
+                    message.sender(sender,"$cThere are no available lobbies!");
+                    message.sender(sender,"Use /mh create to host a lobby!");
+                }
+                return true;
+            }
+
+
             //############################## /mh leave ################################
             if (args.length == 1 && args[0].equalsIgnoreCase("leave")) {
                 if (host != null) {
@@ -204,7 +231,7 @@ public class Main extends JavaPlugin {
                                 runners.remove((Player) sender);
                             }
                             message.sender(sender, "You are now a hunter");
-                            message.sender(sender, "$l$a" + sender.getName() + " $r$7is now a hunter");
+                            message.global("$l$a" + sender.getName() + " $r$7is now a hunter");
                         } else {
                             message.sender(sender, "$cYou are not in a lobby!");
                             message.sender(sender, "Use /mh create to create one or /mh join to join an existing one!");
@@ -230,7 +257,7 @@ public class Main extends JavaPlugin {
                                 hunters.remove((Player) sender);
                             }
                             message.sender(sender, "You are now a runner");
-                            message.sender(sender, "$l$a" + sender.getName() + " $r$7is now a runner");
+                            message.global("$l$a" + sender.getName() + " $r$7is now a runner");
 
                         } else {
                             message.sender(sender, "$cYou are not in a lobby!");
@@ -261,18 +288,51 @@ public class Main extends JavaPlugin {
                                     player.getInventory().clear();
                                     player.setHealth(20);
                                     player.setFoodLevel(20);
-                                    player.sendTitle(ChatColor.translateAlternateColorCodes('$', "$a$lManhunt Started"), ChatColor.translateAlternateColorCodes('$',"$aYou have " + freezeTime + " seconds!"), 10,40,10);
                                     player.teleport(host.getLocation());
                                 }
-
-                                for (Player player : hunters) {
-                                    player.getInventory().addItem(createItem(Material.COMPASS, "Tracker", "Right-click to track current runner", "Shift Right-click to select runner"));
-                                    hunterChoice.put(player, runners.get(0));
-                                    updateCompass(player);
+                                for (Player runner : runners) {
+                                    Main.runnerLoaction.put(runner, runner.getLocation());
+                                    message.title(runner,"$a$lManhunt Started", "$aYou have $c" + freezeTime + "$a seconds!", 10,40,10);
+                                }
+                                for (Player hunter : hunters) {
+                                    hunter.getInventory().addItem(createItem(Material.COMPASS, "Tracker", "Right-click to track current runner", "Shift Right-click to select runner"));
+                                    hunterChoice.put(hunter, runners.get(0));
+                                    updateCompass(hunter);
+                                    message.title(hunter,"$a$lManhunt Started", "$aThe runners have $c" + freezeTime + "$a seconds!", 10,20,10);
                                 }
 
                                 message.global("$a$lManhunt Started");
-                                // Make hunters frozen for 20 seconds
+
+                                freeze = true;
+                                currentTime = freezeTime;
+
+                                BukkitScheduler scheduler = getServer().getScheduler();
+
+
+                                freezeTimer = scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        currentTime-=1;
+
+                                        for (int i : new int[]{1, 2, 3}) {
+                                            if (i == currentTime) {
+                                                for (Player hunter : hunters) {
+                                                    message.title(hunter, "$a" + i, "", 5, 0, 5);
+                                                }
+                                            }
+                                        }
+
+                                        if (currentTime == 0) {
+                                            freeze = false;
+
+                                            for (Player hunter : hunters) {
+                                                message.title(hunter,"$c$lHUNT!", "", 10,10,10);
+                                            }
+
+                                            Bukkit.getScheduler().cancelTask(freezeTimer);
+                                        }
+                                    }
+                                }, 20, 20);
 
                             } else {
                                 message.sender(sender, "$cYou need at least 1 hunter and 1 runner!");
@@ -329,11 +389,10 @@ public class Main extends JavaPlugin {
 
     public static ItemStack runnerListItem(Player player) {
 
-        ItemStack skull = new ItemStack(Material.SKELETON_SKULL);
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         meta.setOwningPlayer(player);
         meta.setDisplayName(player.getName());
-
         skull.setItemMeta(meta);
         return skull;
     }

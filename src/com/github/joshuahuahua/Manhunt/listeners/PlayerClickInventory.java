@@ -19,7 +19,7 @@ public class PlayerClickInventory implements Listener {
                 if (Main.runners.contains(Bukkit.getServer().getPlayer(event.getCurrentItem().getItemMeta().getDisplayName()))) {
                     Main.hunterChoice.put(player, currentRunner);
                     player.closeInventory();
-                    message.player(player, "Targeting " + event.getCurrentItem().getItemMeta().getDisplayName());
+                    Main.updateCompass(player);
                 } else {
                     message.player(player, "$cThat player does not exist!");
                 }
