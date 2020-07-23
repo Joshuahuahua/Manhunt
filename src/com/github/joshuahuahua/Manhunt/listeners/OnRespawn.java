@@ -12,7 +12,7 @@ public class OnRespawn implements Listener {
     @EventHandler
     public void OnRespawn(PlayerRespawnEvent event) {
         if (Main.hunters.contains(event.getPlayer())) {
-            event.getPlayer().getInventory().addItem(Main.createItem(Material.COMPASS, "Tracker", "Right-click to track runner", ""));
+            event.getPlayer().getInventory().addItem(Main.createItem(Material.COMPASS, "Tracker", "Right-click to track current runner", "Shift Right-click to select runner"));
         }
     }
 }

@@ -22,13 +22,14 @@ public class Main extends JavaPlugin {
 
 
 
-    public static String prefix = "$b$lManhunt$r$8> $7";
+    public static String prefix = "$7[$bManhunt$7] ";
     public static Player host = null;
     public static boolean isRunning = false;
-    static int freezeTime = 5;
+    static int freezeTime = 20; // Seconds
     public static boolean freeze = false;
     static int freezeTimer;
     int currentTime;
+    public static boolean messageOnJoin = true;
 
     public static List<Player> lobby = new ArrayList<>();
     public static List<Player> hunters = new ArrayList<>();
@@ -68,6 +69,8 @@ public class Main extends JavaPlugin {
         pluginManager.registerEvents(new OnStep(), this);
         pluginManager.registerEvents(new RightClick(), this);
         pluginManager.registerEvents(new PlayerClickInventory(), this);
+        pluginManager.registerEvents(new OnJoin(this), this);
+        pluginManager.registerEvents(new OnLeave(this), this);
         getLogger().info("Manhunt Enabled");
     }
 
@@ -367,6 +370,7 @@ public class Main extends JavaPlugin {
                 }
                 return true;
             }
+
 
             message.sender(sender,"$cInvalid command!");
             message.sender(sender,"Use /mh help for a list of available commands.");
