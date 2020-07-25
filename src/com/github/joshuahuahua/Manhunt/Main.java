@@ -1,6 +1,8 @@
 package com.github.joshuahuahua.Manhunt;
 
 import com.github.joshuahuahua.Manhunt.listeners.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -71,6 +73,7 @@ public class Main extends JavaPlugin {
         pluginManager.registerEvents(new PlayerClickInventory(), this);
         pluginManager.registerEvents(new OnJoin(this), this);
         pluginManager.registerEvents(new OnLeave(this), this);
+        pluginManager.registerEvents(new OnDrop(), this);
         getLogger().info("Manhunt Enabled");
     }
 
@@ -93,7 +96,7 @@ public class Main extends JavaPlugin {
                 return true;
             }
 
-
+            
             //############################## /mh help ################################
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("help"))) {
                 message.sender(sender,"$e------------ $fHelp: Index (1/1) $e------------");
@@ -360,6 +363,7 @@ public class Main extends JavaPlugin {
                     if (sender.getName().equals(host.getName())) {
                         if (isRunning) {
                             isRunning = false;
+                            Bukkit.getScheduler().cancelTask(freezeTimer);
                             message.global("$c$lManhunt Stopped");
                         } else {
                             message.sender(sender,"$cNo active Manhunt!");

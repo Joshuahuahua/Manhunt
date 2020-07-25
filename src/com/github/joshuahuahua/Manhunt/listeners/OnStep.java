@@ -10,7 +10,7 @@ public class OnStep implements Listener {
 
     @EventHandler
     public void onPlayerStep(PlayerMoveEvent event) {
-        if (Main.hunters.contains(event.getPlayer()) && Main.freeze == true) {
+        if (Main.hunters.contains(event.getPlayer()) && Main.freeze) {
             event.setCancelled(true);
         }
         if (Main.runners.contains(event.getPlayer())) {

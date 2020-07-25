@@ -16,14 +16,14 @@ public class PlayerClickInventory implements Listener {
         if (event.getView().getTitle().equals("Runners")) {
             event.setCancelled(true);
             for (Player currentRunner : Main.runners) {
-                if (Main.runners.contains(Bukkit.getServer().getPlayer(event.getCurrentItem().getItemMeta().getDisplayName()))) {
-                    Main.hunterChoice.put(player, currentRunner);
+                if (currentRunner == Bukkit.getServer().getPlayer(event.getCurrentItem().getItemMeta().getDisplayName())) {
                     player.closeInventory();
+                    Main.hunterChoice.put(player, currentRunner);
                     Main.updateCompass(player);
-                } else {
-                    message.player(player, "$cThat player does not exist!");
+                    return;
                 }
             }
+            message.player(player, "$cThat player does not exist!");
         }
     }
 }

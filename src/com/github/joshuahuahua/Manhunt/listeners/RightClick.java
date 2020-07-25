@@ -20,7 +20,7 @@ public class RightClick implements Listener {
         Action action = event.getAction();
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
             if (Main.isRunning) {
-                if(player.getInventory().getItemInMainHand().getType() == Material.COMPASS && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("Tracker")){
+                if(player.getInventory().getItemInMainHand().getType() == Material.COMPASS && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("Tracker")) {
                     if (!player.isSneaking()) {
                         if (Main.hunterChoice != null) {
                             Main.updateCompass(player);
