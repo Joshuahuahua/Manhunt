@@ -1,8 +1,6 @@
 package com.github.joshuahuahua.Manhunt;
 
 import com.github.joshuahuahua.Manhunt.listeners.*;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -31,7 +29,7 @@ public class Main extends JavaPlugin {
     public static boolean freeze = false;
     static int freezeTimer;
     int currentTime;
-    public static boolean messageOnJoin = true;
+    public static boolean messageOnJoin = false;
 
     public static List<Player> lobby = new ArrayList<>();
     public static List<Player> hunters = new ArrayList<>();
